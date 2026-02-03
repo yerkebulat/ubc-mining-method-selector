@@ -1,0 +1,240 @@
+{
+  "version": "1.0.0",
+  "source": {
+    "excel_file": "UBC Method.xls",
+    "excel_version": "v 1.1.0",
+    "reference_paper": "Nicholas, D.E. (1981). Method Selection - A Numerical Approach. Design and Operation of Caving and Sublevel Stoping Mines, Ch. 4, pp. 39-53.",
+    "algorithm_source": "Miller-Tait, L., Pakalnis, R. and Poulin, R. (1995). UBC Mining Method Selection. 4th Int'l. Symp. on Mine Planning & Equipment Selection, Calgary, pp. 163-168."
+  },
+  "elimination_threshold": -49,
+  "methods": [
+    "Open Pit",
+    "Block Caving",
+    "Sublevel Stoping",
+    "Sublevel Caving",
+    "Longwall",
+    "Room and Pillar",
+    "Shrinkage Stoping",
+    "Cut and Fill",
+    "Top Slicing",
+    "Square Set"
+  ],
+  "factors": {
+    "shape": {
+      "label": "General Shape",
+      "options": ["Equidimensional", "Platy/Tabular", "Irregular"],
+      "category": "geometry",
+      "tooltip": "Equidimensional: all dimensions are on the same order of magnitude. Platy/Tabular: two dimensions are many times the thickness (usually <100m). Irregular: dimensions vary over short distances."
+    },
+    "thickness": {
+      "label": "Ore Thickness",
+      "options": ["V. Narrow", "Narrow", "Intermediate", "Thick", "V. Thick"],
+      "category": "geometry",
+      "tooltip": "V. Narrow: <3m. Narrow: 3-10m. Intermediate: 10-30m. Thick: 30-100m. V. Thick: >100m."
+    },
+    "plunge": {
+      "label": "Ore Plunge",
+      "options": ["Flat", "Moderate", "Steep"],
+      "category": "geometry",
+      "tooltip": "Flat: <20°. Moderate (Intermediate): 20-55°. Steep: >55°."
+    },
+    "grade": {
+      "label": "Grade Distribution",
+      "options": ["Low", "Moderate", "High"],
+      "category": "geometry",
+      "tooltip": "Low (Uniform): grade at any point does not vary significantly from mean. Moderate (Gradational): grades change gradually from zone to zone. High (Erratic): grades change radically over short distances without pattern."
+    },
+    "depth": {
+      "label": "Depth Below Surface",
+      "options": ["<100m", "100-600m", ">600m"],
+      "category": "geometry",
+      "tooltip": "Depth of the deposit below ground surface."
+    },
+    "rmr_ore": {
+      "label": "RMR Ore Zone",
+      "options": ["V. Weak", "Weak", "Moderate", "Strong", "V. Strong"],
+      "category": "ore_zone",
+      "tooltip": "Rock Mass Rating for the ore zone. V. Weak: RMR <20. Weak: RMR 20-40. Moderate: RMR 40-60. Strong: RMR 60-80. V. Strong: RMR >80."
+    },
+    "rss_ore": {
+      "label": "RSS Ore Zone",
+      "options": ["V. Weak", "Weak", "Moderate", "Strong"],
+      "category": "ore_zone",
+      "tooltip": "Rock Substance Strength (uniaxial strength/overburden pressure ratio) for the ore zone. V. Weak: <5. Weak: 5-10. Moderate: 10-15. Strong: >15."
+    },
+    "rmr_hw": {
+      "label": "RMR Hanging Wall",
+      "options": ["V. Weak", "Weak", "Moderate", "Strong", "V. Strong"],
+      "category": "hanging_wall",
+      "tooltip": "Rock Mass Rating for the hanging wall (overlying rock)."
+    },
+    "rss_hw": {
+      "label": "RSS Hanging Wall",
+      "options": ["V. Weak", "Weak", "Moderate", "Strong"],
+      "category": "hanging_wall",
+      "tooltip": "Rock Substance Strength for the hanging wall."
+    },
+    "rmr_fw": {
+      "label": "RMR Footwall",
+      "options": ["V. Weak", "Weak", "Moderate", "Strong", "V. Strong"],
+      "category": "footwall",
+      "tooltip": "Rock Mass Rating for the footwall (underlying rock)."
+    },
+    "rss_fw": {
+      "label": "RSS Footwall",
+      "options": ["V. Weak", "Weak", "Moderate", "Strong"],
+      "category": "footwall",
+      "tooltip": "Rock Substance Strength for the footwall."
+    }
+  },
+  "categories": {
+    "geometry": {
+      "label": "Geometry & Grade Distribution",
+      "factors": ["shape", "thickness", "plunge", "grade", "depth"]
+    },
+    "ore_zone": {
+      "label": "Ore Zone Rock Mechanics",
+      "factors": ["rmr_ore", "rss_ore"]
+    },
+    "hanging_wall": {
+      "label": "Hanging Wall Rock Mechanics",
+      "factors": ["rmr_hw", "rss_hw"]
+    },
+    "footwall": {
+      "label": "Footwall Rock Mechanics",
+      "factors": ["rmr_fw", "rss_fw"]
+    }
+  },
+  "weights": {
+    "Open Pit": {
+      "shape": { "Equidimensional": 4, "Platy/Tabular": 2, "Irregular": 3 },
+      "plunge": { "Flat": 3, "Moderate": 3, "Steep": 1 },
+      "thickness": { "V. Narrow": 1, "Narrow": 2, "Intermediate": 3, "Thick": 4, "V. Thick": 4 },
+      "grade": { "Low": 3, "Moderate": 3, "High": 2 },
+      "depth": { "<100m": 4, "100-600m": 0, ">600m": -49 },
+      "rmr_ore": { "V. Weak": 3, "Weak": 3, "Moderate": 3, "Strong": 3, "V. Strong": 3 },
+      "rmr_hw": { "V. Weak": 2, "Weak": 3, "Moderate": 4, "Strong": 4, "V. Strong": 4 },
+      "rmr_fw": { "V. Weak": 2, "Weak": 3, "Moderate": 4, "Strong": 4, "V. Strong": 4 },
+      "rss_ore": { "V. Weak": 4, "Weak": 3, "Moderate": 3, "Strong": 3 },
+      "rss_hw": { "V. Weak": 3, "Weak": 3, "Moderate": 4, "Strong": 4 },
+      "rss_fw": { "V. Weak": 3, "Weak": 3, "Moderate": 4, "Strong": 4 }
+    },
+    "Block Caving": {
+      "shape": { "Equidimensional": 4, "Platy/Tabular": 2, "Irregular": 0 },
+      "plunge": { "Flat": 3, "Moderate": 2, "Steep": 4 },
+      "thickness": { "V. Narrow": -49, "Narrow": -49, "Intermediate": 0, "Thick": 3, "V. Thick": 4 },
+      "grade": { "Low": 3, "Moderate": 2, "High": 2 },
+      "depth": { "<100m": 2, "100-600m": 3, ">600m": 3 },
+      "rmr_ore": { "V. Weak": 4, "Weak": 3, "Moderate": 2, "Strong": 0, "V. Strong": -49 },
+      "rmr_hw": { "V. Weak": 3, "Weak": 3, "Moderate": 3, "Strong": 2, "V. Strong": 2 },
+      "rmr_fw": { "V. Weak": 3, "Weak": 3, "Moderate": 3, "Strong": 2, "V. Strong": 2 },
+      "rss_ore": { "V. Weak": 4, "Weak": 2, "Moderate": 1, "Strong": 0 },
+      "rss_hw": { "V. Weak": 4, "Weak": 3, "Moderate": 2, "Strong": 0 },
+      "rss_fw": { "V. Weak": 4, "Weak": 3, "Moderate": 2, "Strong": 1 }
+    },
+    "Sublevel Stoping": {
+      "shape": { "Equidimensional": 3, "Platy/Tabular": 4, "Irregular": 1 },
+      "plunge": { "Flat": 2, "Moderate": 1, "Steep": 4 },
+      "thickness": { "V. Narrow": -10, "Narrow": 1, "Intermediate": 3, "Thick": 4, "V. Thick": 3 },
+      "grade": { "Low": 4, "Moderate": 4, "High": 3 },
+      "depth": { "<100m": 3, "100-600m": 4, ">600m": 2 },
+      "rmr_ore": { "V. Weak": 1, "Weak": 3, "Moderate": 4, "Strong": 4, "V. Strong": 4 },
+      "rmr_hw": { "V. Weak": -49, "Weak": 0, "Moderate": 3, "Strong": 4, "V. Strong": 4 },
+      "rmr_fw": { "V. Weak": 0, "Weak": 0, "Moderate": 2, "Strong": 3, "V. Strong": 3 },
+      "rss_ore": { "V. Weak": 0, "Weak": 2, "Moderate": 4, "Strong": 4 },
+      "rss_hw": { "V. Weak": 0, "Weak": 1, "Moderate": 4, "Strong": 5 },
+      "rss_fw": { "V. Weak": 0, "Weak": 1, "Moderate": 3, "Strong": 3 }
+    },
+    "Sublevel Caving": {
+      "shape": { "Equidimensional": 3, "Platy/Tabular": 4, "Irregular": 1 },
+      "plunge": { "Flat": 1, "Moderate": 1, "Steep": 4 },
+      "thickness": { "V. Narrow": -49, "Narrow": -49, "Intermediate": 0, "Thick": 4, "V. Thick": 4 },
+      "grade": { "Low": 3, "Moderate": 2, "High": 2 },
+      "depth": { "<100m": 3, "100-600m": 2, ">600m": 2 },
+      "rmr_ore": { "V. Weak": 3, "Weak": 4, "Moderate": 3, "Strong": 1, "V. Strong": 0 },
+      "rmr_hw": { "V. Weak": 4, "Weak": 4, "Moderate": 3, "Strong": 2, "V. Strong": 2 },
+      "rmr_fw": { "V. Weak": 1, "Weak": 2, "Moderate": 3, "Strong": 3, "V. Strong": 3 },
+      "rss_ore": { "V. Weak": 2, "Weak": 3, "Moderate": 3, "Strong": 2 },
+      "rss_hw": { "V. Weak": 4, "Weak": 3, "Moderate": 2, "Strong": 1 },
+      "rss_fw": { "V. Weak": 1, "Weak": 2, "Moderate": 2, "Strong": 2 }
+    },
+    "Longwall": {
+      "shape": { "Equidimensional": -49, "Platy/Tabular": 4, "Irregular": -49 },
+      "plunge": { "Flat": 4, "Moderate": 0, "Steep": -49 },
+      "thickness": { "V. Narrow": 4, "Narrow": 3, "Intermediate": 0, "Thick": -49, "V. Thick": -49 },
+      "grade": { "Low": 4, "Moderate": 1, "High": 0 },
+      "depth": { "<100m": 2, "100-600m": 2, ">600m": 3 },
+      "rmr_ore": { "V. Weak": 6, "Weak": 6, "Moderate": 4, "Strong": 2, "V. Strong": 2 },
+      "rmr_hw": { "V. Weak": 6, "Weak": 5, "Moderate": 4, "Strong": 3, "V. Strong": 3 },
+      "rmr_fw": { "V. Weak": 0, "Weak": 0, "Moderate": 0, "Strong": 0, "V. Strong": 0 },
+      "rss_ore": { "V. Weak": 6, "Weak": 5, "Moderate": 2, "Strong": 1 },
+      "rss_hw": { "V. Weak": 6, "Weak": 5, "Moderate": 2, "Strong": 2 },
+      "rss_fw": { "V. Weak": 0, "Weak": 0, "Moderate": 0, "Strong": 0 }
+    },
+    "Room and Pillar": {
+      "shape": { "Equidimensional": 0, "Platy/Tabular": 4, "Irregular": 2 },
+      "plunge": { "Flat": 4, "Moderate": 0, "Steep": -49 },
+      "thickness": { "V. Narrow": 4, "Narrow": 3, "Intermediate": 1, "Thick": -49, "V. Thick": -49 },
+      "grade": { "Low": 4, "Moderate": 2, "High": 0 },
+      "depth": { "<100m": 3, "100-600m": 3, ">600m": 2 },
+      "rmr_ore": { "V. Weak": -49, "Weak": 0, "Moderate": 3, "Strong": 5, "V. Strong": 6 },
+      "rmr_hw": { "V. Weak": -49, "Weak": 0, "Moderate": 3, "Strong": 5, "V. Strong": 6 },
+      "rmr_fw": { "V. Weak": 0, "Weak": 0, "Moderate": 0, "Strong": 0, "V. Strong": 0 },
+      "rss_ore": { "V. Weak": 0, "Weak": 0, "Moderate": 3, "Strong": 6 },
+      "rss_hw": { "V. Weak": 0, "Weak": 0, "Moderate": 2, "Strong": 6 },
+      "rss_fw": { "V. Weak": 0, "Weak": 0, "Moderate": 0, "Strong": 0 }
+    },
+    "Shrinkage Stoping": {
+      "shape": { "Equidimensional": 0, "Platy/Tabular": 4, "Irregular": 2 },
+      "plunge": { "Flat": -49, "Moderate": 0, "Steep": 4 },
+      "thickness": { "V. Narrow": 4, "Narrow": 4, "Intermediate": 0, "Thick": -49, "V. Thick": -49 },
+      "grade": { "Low": 3, "Moderate": 2, "High": 2 },
+      "depth": { "<100m": 3, "100-600m": 3, ">600m": 2 },
+      "rmr_ore": { "V. Weak": 0, "Weak": 1, "Moderate": 3, "Strong": 3, "V. Strong": 3 },
+      "rmr_hw": { "V. Weak": 0, "Weak": 0, "Moderate": 2, "Strong": 4, "V. Strong": 4 },
+      "rmr_fw": { "V. Weak": 0, "Weak": 0, "Moderate": 2, "Strong": 3, "V. Strong": 3 },
+      "rss_ore": { "V. Weak": 0, "Weak": 1, "Moderate": 3, "Strong": 4 },
+      "rss_hw": { "V. Weak": 0, "Weak": 1, "Moderate": 3, "Strong": 4 },
+      "rss_fw": { "V. Weak": 0, "Weak": 2, "Moderate": 3, "Strong": 3 }
+    },
+    "Cut and Fill": {
+      "shape": { "Equidimensional": 1, "Platy/Tabular": 4, "Irregular": 4 },
+      "plunge": { "Flat": 1, "Moderate": 3, "Steep": 4 },
+      "thickness": { "V. Narrow": 3, "Narrow": 4, "Intermediate": 4, "Thick": 1, "V. Thick": 0 },
+      "grade": { "Low": 2, "Moderate": 3, "High": 4 },
+      "depth": { "<100m": 2, "100-600m": 3, ">600m": 4 },
+      "rmr_ore": { "V. Weak": 0, "Weak": 1, "Moderate": 2, "Strong": 3, "V. Strong": 3 },
+      "rmr_hw": { "V. Weak": 3, "Weak": 5, "Moderate": 4, "Strong": 3, "V. Strong": 3 },
+      "rmr_fw": { "V. Weak": 3, "Weak": 3, "Moderate": 2, "Strong": 2, "V. Strong": 2 },
+      "rss_ore": { "V. Weak": 0, "Weak": 1, "Moderate": 3, "Strong": 3 },
+      "rss_hw": { "V. Weak": 3, "Weak": 5, "Moderate": 4, "Strong": 2 },
+      "rss_fw": { "V. Weak": 1, "Weak": 3, "Moderate": 3, "Strong": 2 }
+    },
+    "Top Slicing": {
+      "shape": { "Equidimensional": 1, "Platy/Tabular": 2, "Irregular": 0 },
+      "plunge": { "Flat": 4, "Moderate": 2, "Steep": 0 },
+      "thickness": { "V. Narrow": 1, "Narrow": 1, "Intermediate": 0, "Thick": 2, "V. Thick": 1 },
+      "grade": { "Low": 2, "Moderate": 1, "High": 1 },
+      "depth": { "<100m": 2, "100-600m": 1, ">600m": 1 },
+      "rmr_ore": { "V. Weak": 3, "Weak": 2, "Moderate": 1, "Strong": 1, "V. Strong": 0 },
+      "rmr_hw": { "V. Weak": 0, "Weak": 0, "Moderate": 2, "Strong": 3, "V. Strong": 3 },
+      "rmr_fw": { "V. Weak": 0, "Weak": 0, "Moderate": 1, "Strong": 2, "V. Strong": 2 },
+      "rss_ore": { "V. Weak": 3, "Weak": 2, "Moderate": 1, "Strong": 0 },
+      "rss_hw": { "V. Weak": 3, "Weak": 2, "Moderate": 2, "Strong": 2 },
+      "rss_fw": { "V. Weak": 2, "Weak": 2, "Moderate": 1, "Strong": 1 }
+    },
+    "Square Set": {
+      "shape": { "Equidimensional": 0, "Platy/Tabular": 1, "Irregular": 4 },
+      "plunge": { "Flat": 2, "Moderate": 3, "Steep": 2 },
+      "thickness": { "V. Narrow": 4, "Narrow": 3, "Intermediate": 2, "Thick": 0, "V. Thick": 0 },
+      "grade": { "Low": 0, "Moderate": 1, "High": 3 },
+      "depth": { "<100m": 1, "100-600m": 1, ">600m": 2 },
+      "rmr_ore": { "V. Weak": 4, "Weak": 4, "Moderate": 1, "Strong": 0, "V. Strong": 0 },
+      "rmr_hw": { "V. Weak": 4, "Weak": 4, "Moderate": 1, "Strong": 0, "V. Strong": 0 },
+      "rmr_fw": { "V. Weak": 3, "Weak": 1, "Moderate": 0, "Strong": 0, "V. Strong": 0 },
+      "rss_ore": { "V. Weak": 4, "Weak": 3, "Moderate": 1, "Strong": 0 },
+      "rss_hw": { "V. Weak": 4, "Weak": 2, "Moderate": 1, "Strong": 0 },
+      "rss_fw": { "V. Weak": 3, "Weak": 2, "Moderate": 0, "Strong": 0 }
+    }
+  }
+}
