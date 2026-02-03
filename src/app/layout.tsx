@@ -75,7 +75,7 @@ export default function RootLayout({
 
           <footer className="border-t border-mining-200 bg-mining-50 py-8">
             <div className="container mx-auto px-4">
-              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3">
                 <div>
                   <h3 className="mb-3 font-semibold text-mining-900">Attribution</h3>
                   <p className="text-sm text-mining-600">
