@@ -85,14 +85,6 @@ export default function RootLayout({
                   </p>
                 </div>
                 <div>
-                  <h3 className="mb-3 font-semibold text-mining-900">Disclaimer</h3>
-                  <p className="text-sm text-mining-600">
-                    This is an open-source reimplementation, not an official UBC
-                    product. Engineering judgment is required; this tool is not a
-                    substitute for a professional feasibility study.
-                  </p>
-                </div>
-                <div>
                   <h3 className="mb-3 font-semibold text-mining-900">Implementation</h3>
                   <p className="text-sm text-mining-600">
                     Web application implemented by Yerkebulan Tazabek.
