@@ -1,1 +1,0 @@
-# ubc-mining-method-selector
