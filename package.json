@@ -10,7 +10,7 @@
     "lint": "next lint",
     "test": "jest",
     "test:watch": "jest --watch",
-    "export": "next build && next export"
+    "export": "next build"
   },
   "dependencies": {
     "@react-pdf/renderer": "^3.4.4",
