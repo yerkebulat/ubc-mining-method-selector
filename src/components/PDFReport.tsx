@@ -230,13 +230,13 @@ function PDFReportDocument({ results }: PDFReportProps) {
           <Text style={styles.sectionTitle}>Ranked Mining Methods</Text>
           <View style={styles.table}>
             <View style={styles.tableRowHeader}>
-              <Text style={[styles.tableCellHeader, styles.rankCell]}>Rank</Text>
               <Text style={[styles.tableCellHeader, styles.methodCell]}>Method</Text>
               <Text style={[styles.tableCellHeader, styles.scoreCell]}>Geo</Text>
               <Text style={[styles.tableCellHeader, styles.scoreCell]}>Ore</Text>
               <Text style={[styles.tableCellHeader, styles.scoreCell]}>HW</Text>
               <Text style={[styles.tableCellHeader, styles.scoreCell]}>FW</Text>
               <Text style={[styles.tableCellHeader, styles.scoreCell]}>Total</Text>
+              <Text style={[styles.tableCellHeader, styles.rankCell]}>Rank</Text>
               <Text style={[styles.tableCellHeader, styles.statusCell]}>Status</Text>
             </View>
             {results.rankedMethods.map((result, idx) => (
@@ -247,9 +247,6 @@ function PDFReportDocument({ results }: PDFReportProps) {
                   result.isEliminated ? styles.eliminated : {},
                 ]}
               >
-                <Text style={[styles.tableCell, styles.rankCell]}>
-                  {result.isEliminated ? '-' : idx + 1}
-                </Text>
                 <Text style={[styles.tableCell, styles.methodCell]}>
                   {result.method}
                 </Text>
@@ -267,6 +264,9 @@ function PDFReportDocument({ results }: PDFReportProps) {
                 </Text>
                 <Text style={[styles.tableCell, styles.scoreCell]}>
                   {result.totalScore}
+                </Text>
+                <Text style={[styles.tableCell, styles.rankCell]}>
+                  {result.isEliminated ? '-' : idx + 1}
                 </Text>
                 <Text style={[styles.tableCell, styles.statusCell]}>
                   {result.isEliminated ? 'Eliminated' : 'Recommended'}
