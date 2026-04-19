@@ -2,6 +2,7 @@
 
 import {
   Document,
+  Link,
   Page,
   Text,
   View,
@@ -77,6 +78,11 @@ const styles = StyleSheet.create({
     color: '#3b4d67',
     lineHeight: 1.45,
   },
+  linkText: {
+    color: '#2563eb',
+    fontSize: 9,
+    lineHeight: 1.4,
+  },
   footer: {
     position: 'absolute',
     bottom: 30,
@@ -97,12 +103,14 @@ interface PillarStrengthPDFProps {
   summary: Record<string, string | number | null>;
   warnings: string[];
   equationNotes: string[];
+  shareUrl?: string;
 }
 
 function PillarStrengthPDFDocument({
   summary,
   warnings,
   equationNotes,
+  shareUrl,
 }: PillarStrengthPDFProps) {
   const timestamp = new Date().toLocaleString();
 
@@ -132,6 +140,15 @@ function PillarStrengthPDFDocument({
             ))}
           </View>
         </View>
+
+        {shareUrl && shareUrl !== 'Unavailable' && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Reloadable Calculation Link</Text>
+            <Link src={shareUrl} style={styles.linkText}>
+              {shareUrl}
+            </Link>
+          </View>
+        )}
 
         {warnings.length > 0 && (
           <View style={styles.section}>
@@ -176,13 +193,15 @@ function PillarStrengthPDFDocument({
 export async function generatePillarStrengthPDF(
   summary: Record<string, string | number | null>,
   warnings: string[],
-  equationNotes: string[]
+  equationNotes: string[],
+  shareUrl?: string
 ): Promise<Blob> {
   return pdf(
     <PillarStrengthPDFDocument
       summary={summary}
       warnings={warnings}
       equationNotes={equationNotes}
+      shareUrl={shareUrl}
     />
   ).toBlob();
 }
@@ -200,4 +219,3 @@ export function downloadPillarStrengthPDF(
   document.body.removeChild(link);
   URL.revokeObjectURL(url);
 }
-

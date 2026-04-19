@@ -671,6 +671,16 @@ export function PillarStrengthCalculator() {
     'Warnings / notes': allWarnings.join(' | ') || 'None',
   };
 
+  const shareUrl =
+    hasLoadedUrlState && typeof window !== 'undefined'
+      ? window.location.href
+      : 'Unavailable';
+
+  const exportSummary = {
+    ...summary,
+    'Share link': shareUrl,
+  };
+
   const calculateEquationStrength = (
     equationId: string,
     scenarioGeometry: GeometryInput = geometry,
@@ -804,10 +814,10 @@ export function PillarStrengthCalculator() {
   };
 
   const handleCopyResults = async () => {
-    const text = buildResultText(summary);
+    const text = buildResultText(exportSummary);
     try {
       await navigator.clipboard.writeText(text);
-      setCopyStatus('Results copied to clipboard.');
+      setCopyStatus('Results and share link copied to clipboard.');
     } catch {
       setCopyStatus('Clipboard unavailable. Export JSON or CSV instead.');
     }
@@ -829,13 +839,14 @@ export function PillarStrengthCalculator() {
         '@/components/pillarStrength/PillarStrengthPDF'
       );
       const blob = await generatePillarStrengthPDF(
-        summary,
+        exportSummary,
         allWarnings,
         [
           selectedEquation.formulaText,
           ...selectedEquation.assumptions,
           ...selectedEquation.limitations,
-        ]
+        ],
+        shareUrl
       );
       const timestamp = new Date().toISOString().split('T')[0];
       downloadPillarStrengthPDF(blob, `pillar-strength-report-${timestamp}.pdf`);
@@ -1585,23 +1596,38 @@ export function PillarStrengthCalculator() {
               <WarningList warnings={allWarnings} />
             </div>
 
-            <div className="mt-5 grid gap-3 sm:grid-cols-2">
-              <button
-                type="button"
-                className="btn-primary gap-2"
-                onClick={handleCopyResults}
-              >
-                <Clipboard className="h-4 w-4" />
-                Copy Results
-              </button>
-              <button
-                type="button"
-                className="btn-outline gap-2"
-                onClick={handleCopyShareLink}
-              >
-                <LinkIcon className="h-4 w-4" />
-                Copy Share Link
-              </button>
+            <div className="mt-5 rounded-lg border border-mining-200 bg-mining-50 p-4">
+              <h3 className="font-semibold text-mining-900">Export and share</h3>
+              <p className="mt-1 text-sm text-mining-600">
+                Copy the calculation, copy a reloadable link, or download a PDF report.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <button
+                  type="button"
+                  className="btn-primary gap-2"
+                  onClick={handleCopyResults}
+                >
+                  <Clipboard className="h-4 w-4" />
+                  Copy Results
+                </button>
+                <button
+                  type="button"
+                  className="btn-outline gap-2"
+                  onClick={handleCopyShareLink}
+                >
+                  <LinkIcon className="h-4 w-4" />
+                  Copy Link
+                </button>
+                <button
+                  type="button"
+                  className="btn-outline gap-2"
+                  disabled={isExportingPdf}
+                  onClick={handleExportPdf}
+                >
+                  <FileText className="h-4 w-4" />
+                  {isExportingPdf ? 'Generating...' : 'Export PDF'}
+                </button>
+              </div>
             </div>
             {copyStatus && <p className="mt-3 text-sm text-mining-600">{copyStatus}</p>}
           </FocusSection>
@@ -1777,7 +1803,7 @@ export function PillarStrengthCalculator() {
                 onClick={() =>
                   downloadTextFile(
                     'pillar-strength-results.json',
-                    JSON.stringify(summary, null, 2),
+                    JSON.stringify(exportSummary, null, 2),
                     'application/json'
                   )
                 }
@@ -1791,7 +1817,7 @@ export function PillarStrengthCalculator() {
                 onClick={() =>
                   downloadTextFile(
                     'pillar-strength-results.csv',
-                    buildCsv(summary),
+                    buildCsv(exportSummary),
                     'text/csv'
                   )
                 }
@@ -1811,7 +1837,7 @@ export function PillarStrengthCalculator() {
             </div>
 
             <dl className="mt-5 space-y-3 text-sm">
-              {Object.entries(summary).map(([key, value]) => (
+              {Object.entries(exportSummary).map(([key, value]) => (
                 <div
                   key={key}
                   className="flex gap-3 border-b border-mining-100 pb-2 last:border-0 last:pb-0"
