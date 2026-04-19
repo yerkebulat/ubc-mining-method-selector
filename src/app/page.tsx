@@ -1,11 +1,12 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { InputForm, ResultsDisplay, WeightsModal, generatePDF, downloadPDF } from '@/components';
 import { calculateScores, getConfig } from '@/lib/scoring-engine';
 import { decodeInputsFromURL, encodeInputsToURL } from '@/lib/utils';
 import type { InputValues, ScoringResult } from '@/types';
-import { Share2, BookOpen, AlertTriangle } from 'lucide-react';
+import { Share2, BookOpen, AlertTriangle, Calculator, ChevronRight, Pickaxe } from 'lucide-react';
 
 const config = getConfig();
 
@@ -72,12 +73,63 @@ export default function Home() {
       {/* Page Header */}
       <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-mining-900 md:text-4xl">
-          Mining Method Selection Tool
+          Mining Engineering Tools
         </h1>
         <p className="mt-3 text-lg text-mining-600 max-w-2xl mx-auto">
-          A numerical approach to selecting underground mining methods based on
-          deposit geometry, grade distribution, and rock mechanics characteristics.
+          Select a UBC mining method workflow or run preliminary pillar strength
+          calculations for room-and-pillar layouts.
         </p>
+      </div>
+
+      <div className="mb-8 grid gap-4 md:grid-cols-2">
+        <a
+          href="#ubc-selector"
+          className="group rounded-lg border border-mining-200 bg-white p-6 shadow-sm transition hover:border-mining-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-mining-500 focus:ring-offset-2"
+          aria-label="Open UBC Mining Method Selector workflow"
+        >
+          <div className="flex h-full flex-col justify-between gap-6">
+            <div>
+              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-mining-100 text-mining-700">
+                <Pickaxe className="h-5 w-5" />
+              </div>
+              <h2 className="text-xl font-semibold text-mining-900">
+                UBC Mining Method Selector
+              </h2>
+              <p className="mt-2 text-sm text-mining-600">
+                Use the existing UBC-based mining method selection workflow.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-mining-700 group-hover:text-mining-900">
+              Start selector
+              <ChevronRight className="h-4 w-4" />
+            </span>
+          </div>
+        </a>
+
+        <Link
+          href="/pillar-strength"
+          className="group rounded-lg border border-mining-200 bg-white p-6 shadow-sm transition hover:border-mining-400 hover:shadow-md focus:outline-none focus:ring-2 focus:ring-mining-500 focus:ring-offset-2"
+          aria-label="Open Pillar Strength Calculations page"
+        >
+          <div className="flex h-full flex-col justify-between gap-6">
+            <div>
+              <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-lg bg-mining-100 text-mining-700">
+                <Calculator className="h-5 w-5" />
+              </div>
+              <h2 className="text-xl font-semibold text-mining-900">
+                Pillar Strength Calculations
+              </h2>
+              <p className="mt-2 text-sm text-mining-600">
+                Estimate pillar stress, extraction ratio, pillar strength, and factor
+                of safety using classic empirical equations.
+              </p>
+            </div>
+            <span className="inline-flex items-center gap-2 text-sm font-medium text-mining-700 group-hover:text-mining-900">
+              Open calculator
+              <ChevronRight className="h-4 w-4" />
+            </span>
+          </div>
+        </Link>
       </div>
 
       {/* Disclaimer Banner */}
@@ -95,7 +147,7 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="grid gap-8 lg:grid-cols-12">
+      <div id="ubc-selector" className="grid scroll-mt-24 gap-8 lg:grid-cols-12">
         {/* Input Form */}
         <div className="lg:col-span-5">
           <div className="sticky top-24">
