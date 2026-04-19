@@ -5,6 +5,7 @@ import type {
   ExtractionRatioResult,
   FactorOfSafetyResult,
   GeometryInput,
+  LunderPakalnisConfinementResult,
   TributaryStressResult,
   VerticalStressInput,
   VerticalStressResult,
@@ -346,6 +347,71 @@ export function calculateFactorOfSafety(
   };
 }
 
+export function calculateLunderPakalnisConfinement(
+  widthM: number,
+  heightM: number
+): LunderPakalnisConfinementResult {
+  const warnings: string[] = [];
+  const formula =
+    'Cpav = 0.46[log10(W/H + 0.75)]^(1.4/(W/H)); kappa = tan(acos((1 - Cpav)/(1 + Cpav)))';
+
+  if (!isPositive(widthM) || !isPositive(heightM)) {
+    return {
+      cpav: null,
+      kappa: null,
+      warnings: ['Lunder-Pakalnis kappa requires positive pillar width and height.'],
+      formula,
+    };
+  }
+
+  const ratio = widthM / heightM;
+  const logTerm = Math.log10(ratio + 0.75);
+
+  if (ratio <= 0.25 || logTerm <= 0) {
+    return {
+      cpav: null,
+      kappa: null,
+      warnings: [
+        'Lunder-Pakalnis confinement cannot be calculated for this very low W/H ratio because the logarithmic term is not positive.',
+      ],
+      formula,
+    };
+  }
+
+  if (ratio < 0.5) {
+    warnings.push(
+      'Lunder-Pakalnis W/H is very low. Check whether a hard-rock pillar equation is appropriate for this geometry.'
+    );
+  }
+
+  if (ratio > 3) {
+    warnings.push(
+      'Lunder-Pakalnis W/H exceeds 3. Treat calculated kappa as extrapolated unless site calibration supports it.'
+    );
+  }
+
+  const cpav = 0.46 * Math.pow(logTerm, 1.4 / ratio);
+  const acosArgument = (1 - cpav) / (1 + cpav);
+
+  if (!Number.isFinite(cpav) || acosArgument < -1 || acosArgument > 1) {
+    return {
+      cpav: null,
+      kappa: null,
+      warnings: ['Lunder-Pakalnis confinement calculation produced an invalid value.'],
+      formula,
+    };
+  }
+
+  const kappa = Math.tan(Math.acos(acosArgument));
+
+  return {
+    cpav,
+    kappa,
+    warnings,
+    formula,
+  };
+}
+
 export const equationCalculators: Record<string, EquationCalculator> = {
   linearUcsRatio: (context) => {
     const geometryError = requirePositiveGeometry(context);
@@ -535,14 +601,21 @@ export const equationCalculators: Record<string, EquationCalculator> = {
   },
   lunderPakalnis: (context) => {
     const ucsMpa = requirePositiveInput(context, 'ucsMpa', 'UCS');
-    const kappa = getInput(context, 'kappa');
+    const calculated = calculateLunderPakalnisConfinement(
+      context.widthM,
+      context.heightM
+    );
+    const kappa = getInput(context, 'kappa') ?? calculated.kappa;
     if (!ucsMpa || kappa === null || kappa < 0) {
-      return invalidResult('UCS and non-negative kappa are required.');
+      return invalidResult(
+        calculated.warnings[0] ?? 'UCS and non-negative kappa are required.'
+      );
     }
 
-    return strengthResult(0.44 * ucsMpa * (0.68 + 0.52 * kappa), [
-      'Kappa must be determined using the Lunder and Pakalnis confinement method.',
-    ]);
+    return strengthResult(
+      0.44 * ucsMpa * (0.68 + 0.52 * kappa),
+      calculated.warnings
+    );
   },
   customPowerLaw: (context) => {
     const geometryError = requirePositiveGeometry(context);
@@ -562,4 +635,3 @@ export const equationCalculators: Record<string, EquationCalculator> = {
     );
   },
 };
-

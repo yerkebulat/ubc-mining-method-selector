@@ -598,8 +598,9 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     reference: 'Lunder and Pakalnis (1997)',
     rockCategory: 'hard-rock',
     applicableRockType: 'Hard rocks',
-    formulaText: 'sigma_p = 0.44 sigma_c [0.68 + 0.52 kappa]',
-    requiredInputs: [COMMON_EQUATION_INPUTS.ucsMpa, COMMON_EQUATION_INPUTS.kappa],
+    formulaText:
+      'sigma_p = 0.44 sigma_c [0.68 + 0.52 kappa], with kappa calculated from Cpav and W/H',
+    requiredInputs: [COMMON_EQUATION_INPUTS.ucsMpa],
     variableDefinitions: [
       ucsVariable,
       {
@@ -608,10 +609,13 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
         unit: '-',
       },
     ],
-    assumptions: ['Kappa is supplied by the user from the Lunder-Pakalnis procedure.'],
+    assumptions: [
+      'Cpav and kappa are calculated from W/H by default.',
+      'Manual kappa override is available in the calculator for site-calibrated workflows.',
+    ],
     limitations: [
-      'This page does not yet calculate kappa from confinement geometry.',
       'The referenced hard-rock design chart in the PDF warns that empirical curves can be misinterpreted.',
+      'Site calibration is still recommended before using the confinement formula for design.',
     ],
     status: 'implemented',
     sourceNotes: [
@@ -651,4 +655,3 @@ export function getPillarStrengthEquation(
 ): PillarStrengthEquation | undefined {
   return pillarStrengthEquations.find((equation) => equation.id === equationId);
 }
-

@@ -101,3 +101,9 @@ export interface FactorOfSafetyResult {
   guidance: string;
 }
 
+export interface LunderPakalnisConfinementResult {
+  cpav: number | null;
+  kappa: number | null;
+  warnings: string[];
+  formula: string;
+}

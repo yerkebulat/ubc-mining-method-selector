@@ -1,6 +1,7 @@
 import {
   calculateExtractionRatio,
   calculateFactorOfSafety,
+  calculateLunderPakalnisConfinement,
   calculateTributaryAreaStressSquare,
   calculateVerticalStress,
   equationCalculators,
@@ -127,5 +128,34 @@ describe('pillar strength calculations', () => {
 
     expect(result.strengthMpa).toBeCloseTo(0.44 * 150 * (0.68 + 0.52));
   });
-});
 
+  it('calculates Lunder and Pakalnis Cpav and kappa from W/H', () => {
+    const result = calculateLunderPakalnisConfinement(8, 4);
+
+    expect(result.cpav).toBeCloseTo(0.2587, 3);
+    expect(result.kappa).toBeCloseTo(1.372, 3);
+  });
+
+  it('uses calculated Lunder and Pakalnis kappa when no override is supplied', () => {
+    const confinement = calculateLunderPakalnisConfinement(8, 4);
+    const result = equationCalculators.lunderPakalnis({
+      widthM: 8,
+      lengthM: 8,
+      heightM: 4,
+      widthToHeightRatio: 2,
+      equationInputs: { ucsMpa: 150 },
+    });
+
+    expect(result.strengthMpa).toBeCloseTo(
+      0.44 * 150 * (0.68 + 0.52 * (confinement.kappa ?? 0))
+    );
+  });
+
+  it('returns warnings for invalid Lunder and Pakalnis confinement geometry', () => {
+    const result = calculateLunderPakalnisConfinement(0, 4);
+
+    expect(result.cpav).toBeNull();
+    expect(result.kappa).toBeNull();
+    expect(result.warnings.length).toBeGreaterThan(0);
+  });
+});
