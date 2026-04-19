@@ -8,8 +8,16 @@
     --foreground: 222.2 84% 4.9%;
   }
 
+  html.dark {
+    color-scheme: dark;
+  }
+
   body {
     @apply bg-white text-mining-950 antialiased;
+  }
+
+  html.dark body {
+    @apply bg-mining-950 text-mining-100;
   }
 
   * {
@@ -34,12 +42,28 @@
     @apply btn border border-mining-300 bg-transparent text-mining-700 hover:bg-mining-50 focus:ring-mining-400;
   }
 
+  .dark .btn-outline {
+    @apply border-mining-500 text-mining-200 hover:bg-mining-800 focus:ring-mining-400;
+  }
+
+  .dark .btn-secondary {
+    @apply bg-mining-800 text-mining-100 hover:bg-mining-700;
+  }
+
   .input {
     @apply block w-full rounded-lg border border-mining-300 bg-white px-3 py-2 text-sm placeholder:text-mining-400 focus:border-mining-500 focus:outline-none focus:ring-1 focus:ring-mining-500 disabled:cursor-not-allowed disabled:opacity-50;
   }
 
+  .dark .input {
+    @apply border-mining-500 bg-mining-950 text-mining-100 placeholder:text-mining-500 focus:border-mining-300 focus:ring-mining-300;
+  }
+
   .select {
     @apply block w-full rounded-lg border border-mining-300 bg-white px-3 py-2 text-sm focus:border-mining-500 focus:outline-none focus:ring-1 focus:ring-mining-500 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .dark .select {
+    @apply border-mining-500 bg-mining-950 text-mining-100 focus:border-mining-300 focus:ring-mining-300;
   }
 
   .label {
@@ -74,6 +98,148 @@
       transform: translateY(0);
     }
   }
+}
+
+.dark [class~="bg-white"] {
+  background-color: #1f2530;
+}
+
+.dark [class~="bg-white/95"] {
+  background-color: rgb(31 37 48 / 0.95);
+}
+
+.dark [class~="bg-white/60"] {
+  background-color: rgb(31 37 48 / 0.75);
+}
+
+.dark [class~="bg-mining-50"] {
+  background-color: #252d3b;
+}
+
+.dark [class~="bg-mining-50/50"] {
+  background-color: rgb(37 45 59 / 0.5);
+}
+
+.dark [class~="bg-mining-100"] {
+  background-color: #2f3949;
+}
+
+.dark [class~="bg-mining-200"] {
+  background-color: #344256;
+}
+
+.dark [class~="border-mining-100"] {
+  border-color: #344256;
+}
+
+.dark [class~="border-mining-200"] {
+  border-color: #485f7f;
+}
+
+.dark [class~="border-mining-300"] {
+  border-color: #5c7699;
+}
+
+.dark [class~="border-mining-400"],
+.dark [class~="border-mining-500"],
+.dark [class~="border-mining-600"] {
+  border-color: #7c94b2;
+}
+
+.dark [class~="text-mining-950"],
+.dark [class~="text-mining-900"] {
+  color: #f5f7fa;
+}
+
+.dark [class~="text-mining-800"] {
+  color: #ebeef3;
+}
+
+.dark [class~="text-mining-700"],
+.dark [class~="text-mining-600"] {
+  color: #d2dae5;
+}
+
+.dark [class~="text-mining-500"],
+.dark [class~="text-mining-400"] {
+  color: #aab9ce;
+}
+
+.dark [class~="text-mining-300"],
+.dark [class~="text-mining-200"] {
+  color: #d2dae5;
+}
+
+.dark .btn[class~="bg-white"] {
+  background-color: #f5f7fa;
+  color: #1f2530;
+}
+
+.dark [class~="hover:bg-mining-50"]:hover {
+  background-color: #344256;
+}
+
+.dark [class~="hover:bg-mining-100"]:hover {
+  background-color: #344256;
+}
+
+.dark [class~="hover:bg-mining-200"]:hover {
+  background-color: #485f7f;
+}
+
+.dark [class~="hover:text-mining-900"]:hover {
+  color: #ffffff;
+}
+
+.dark [class~="bg-red-50"] {
+  background-color: rgb(69 10 10 / 0.55);
+}
+
+.dark [class~="border-red-200"] {
+  border-color: #991b1b;
+}
+
+.dark [class~="text-red-900"] {
+  color: #fecaca;
+}
+
+.dark [class~="text-red-800"],
+.dark [class~="text-red-700"] {
+  color: #fca5a5;
+}
+
+.dark [class~="bg-yellow-50"] {
+  background-color: rgb(66 32 6 / 0.55);
+}
+
+.dark [class~="border-yellow-200"] {
+  border-color: #a16207;
+}
+
+.dark [class~="text-yellow-900"] {
+  color: #fef3c7;
+}
+
+.dark [class~="text-yellow-800"],
+.dark [class~="text-yellow-700"] {
+  color: #fde68a;
+}
+
+.dark [class~="bg-green-50"] {
+  background-color: rgb(5 46 22 / 0.55);
+}
+
+.dark [class~="border-green-200"] {
+  border-color: #15803d;
+}
+
+.dark [class~="text-green-900"] {
+  color: #dcfce7;
+}
+
+.dark [class~="text-green-800"],
+.dark [class~="text-green-700"] {
+  color: #bbf7d0;
 }
 
 /* Custom scrollbar */

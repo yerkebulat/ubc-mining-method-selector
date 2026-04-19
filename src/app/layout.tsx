@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { ThemeToggle } from '@/components/ThemeToggle';
 import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -34,10 +35,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body className={inter.className}>
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var t=localStorage.getItem('ubc-mining-theme');document.documentElement.classList.toggle('dark',t==='dark');document.documentElement.style.colorScheme=t==='dark'?'dark':'light'}catch(e){}",
+          }}
+        />
         <div className="min-h-screen flex flex-col">
-          <header className="sticky top-0 z-50 border-b border-mining-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60">
+          <header className="sticky top-0 z-50 border-b border-mining-200 bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/60 dark:bg-mining-950/95 supports-[backdrop-filter]:dark:bg-mining-950/75">
             <div className="container mx-auto flex h-16 items-center justify-between px-4">
               <div className="flex items-center gap-2">
                 <svg
@@ -59,6 +66,7 @@ export default function RootLayout({
                 </span>
               </div>
               <nav className="flex items-center gap-4 text-sm">
+                <ThemeToggle />
                 <a
                   href="https://github.com"
                   target="_blank"
