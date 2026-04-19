@@ -56,6 +56,48 @@ export const COMMON_EQUATION_INPUTS: Record<string, EquationInputDefinition> = {
     step: 0.01,
     helperText: 'Reference specimen size used to derive k from UCS.',
   },
+  specimenWidthM: {
+    key: 'specimenWidthM',
+    label: 'Specimen width, Ws',
+    unit: 'm',
+    defaultValue: 0.05,
+    min: 0,
+    step: 0.01,
+    helperText: 'Specimen width used by specimen-scaled pillar equations.',
+  },
+  specimenHeightM: {
+    key: 'specimenHeightM',
+    label: 'Specimen height, Hs',
+    unit: 'm',
+    defaultValue: 0.05,
+    min: 0,
+    step: 0.01,
+    helperText: 'Specimen height used by specimen-scaled pillar equations.',
+  },
+  referenceRatio: {
+    key: 'referenceRatio',
+    label: 'Reference ratio R0',
+    defaultValue: 1,
+    min: 0,
+    step: 0.05,
+    helperText: 'Reference width-to-height ratio used by the Salamon (1982) equation.',
+  },
+  epsilon: {
+    key: 'epsilon',
+    label: 'Epsilon',
+    defaultValue: 1,
+    step: 0.05,
+    helperText: 'Curvature exponent in the Salamon (1982) equation.',
+  },
+  martinS: {
+    key: 'martinS',
+    label: 'Martin s',
+    defaultValue: 0.1089,
+    min: 0,
+    step: 0.01,
+    helperText:
+      'Martin brittle Hoek-Brown constant. Default gives sqrt(s) = 0.33 from the table ratio.',
+  },
   alpha: {
     key: 'alpha',
     label: 'Exponent alpha',
@@ -134,4 +176,3 @@ export const COMMON_EQUATION_INPUTS: Record<string, EquationInputDefinition> = {
     step: 0.05,
   },
 };
-

@@ -3,7 +3,7 @@ import type { PillarStrengthEquation } from './types';
 
 const sourceTable = [
   'Reference slides folder: pillar_strength_for_reference_slides',
-  'Classic Pillar Strength Equations slide, Suorineni (2013) table screenshot.',
+  'Suorineni_ALL_Equations.pdf, Tables 2 and 3, Suorineni (2013) equation summaries reproduced in Suorineni (2014).',
 ];
 
 const ratioVariables = [
@@ -68,18 +68,19 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     reference: 'Bunting (1912)',
     rockCategory: 'coal-soft-rock',
     applicableRockType: 'Soft rock / coal table entry',
-    formulaText: 'sigma_p = 1000[0.70 + 0.30(b1 / h)]',
+    formulaText: 'sigma_p = 1000[0.70 + 0.30(w / h)] psi, converted to MPa',
     requiredInputs: [],
     variableDefinitions: ratioVariables,
-    assumptions: ['The slide lists a factor of safety of 2.5.'],
-    limitations: [
-      'The constant unit and b1 notation are not clear enough for a metric implementation.',
+    assumptions: [
+      'The paper table lists a factor of safety of 2.5.',
+      'The historical coefficient is treated as psi and converted to MPa.',
     ],
-    status: 'partial',
-    statusNote:
-      'Listed from the slides but not fully parameterized because the coefficient units and b1 variable are unclear.',
+    limitations: [
+      'Original calibration context and specimen basis are not expanded in the paper table.',
+    ],
+    status: 'implemented',
     sourceNotes: sourceTable,
-    // TODO: Implement after confirming metric conversion and the b1 definition.
+    calculatorId: 'bunting1912',
   },
   {
     id: 'greenwald-howarth-hartman-1939',
@@ -107,18 +108,18 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     reference: 'Greenwald, Howarth and Hartman (1941)',
     rockCategory: 'coal-soft-rock',
     applicableRockType: 'Soft rock / coal table entry',
-    formulaText: 'sigma_p = 2800[W^0.5 / H^(5/6)]',
+    formulaText: 'sigma_p = 2800[W^0.5 / H^(5/6)] psi, with W and H in inches',
     requiredInputs: [],
     variableDefinitions: ratioVariables,
-    assumptions: [],
-    limitations: [
-      'The coefficient is readable, but the slide does not state the original stress and length units.',
+    assumptions: [
+      'The historical inch/psi form is evaluated internally and converted to MPa.',
     ],
-    status: 'partial',
-    statusNote:
-      'Equation is visible but held as reference-only until the coefficient can be converted safely to metric units.',
+    limitations: [
+      'Original calibration context and specimen basis are not expanded in the paper table.',
+    ],
+    status: 'implemented',
     sourceNotes: sourceTable,
-    // TODO: Implement after confirming original units for the 2800 coefficient.
+    calculatorId: 'greenwald1941',
   },
   {
     id: 'obert-duvall-1946',
@@ -183,18 +184,17 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     reference: 'Bieniawski (1967, 1969)',
     rockCategory: 'coal-soft-rock',
     applicableRockType: 'Soft rock / coal, w < 60 inches in the slide table',
-    formulaText: 'sigma_p = 1100[w^0.16 / h^0.55], w < 60 inches',
+    formulaText:
+      'sigma_p = 1100[w^0.16 / h^0.55] psi, w < 60 inches; w and h converted from metres to inches',
     requiredInputs: [],
     variableDefinitions: ratioVariables,
-    assumptions: [],
+    assumptions: ['Historical inch/psi form is converted to MPa.'],
     limitations: [
-      'The equation row explicitly uses inches; metric conversion and stress units are not stated on the slide.',
+      'Use only within the w < 60 inches range unless deliberately comparing equations.',
     ],
-    status: 'partial',
-    statusNote:
-      'Reference-only until original unit basis is confirmed and converted to metric.',
+    status: 'implemented',
     sourceNotes: sourceTable,
-    // TODO: Implement after confirming the imperial-to-metric coefficient conversion.
+    calculatorId: 'bieniawskiSmall1967',
   },
   {
     id: 'bieniawski-1967-1969-large',
@@ -203,18 +203,16 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     reference: 'Bieniawski (1967, 1969)',
     rockCategory: 'coal-soft-rock',
     applicableRockType: 'Soft rock / coal, w > 60 inches in the slide table',
-    formulaText: 'sigma_p = 400 + 200(w / h), w > 60 inches',
+    formulaText: 'sigma_p = [400 + 200(w / h)] psi, w > 60 inches; converted to MPa',
     requiredInputs: [],
     variableDefinitions: ratioVariables,
-    assumptions: [],
+    assumptions: ['Historical psi form is converted to MPa.'],
     limitations: [
-      'The equation row explicitly uses inches; stress units are not stated on the slide.',
+      'Use only within the w > 60 inches range unless deliberately comparing equations.',
     ],
-    status: 'partial',
-    statusNote:
-      'Reference-only until original unit basis is confirmed and converted to metric.',
+    status: 'implemented',
     sourceNotes: sourceTable,
-    // TODO: Implement after confirming the imperial-to-metric coefficient conversion.
+    calculatorId: 'bieniawskiLarge1967',
   },
   {
     id: 'bieniawski-1981-shape-factor',
@@ -269,18 +267,31 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     rockCategory: 'coal-soft-rock',
     applicableRockType: 'Coal / soft rock table entry',
     formulaText:
-      'sigma_p = sigma_c[(W_p / W_s)^0.46(H_p / H_s)^0.66] as visible in the slide',
-    requiredInputs: [],
-    variableDefinitions: ratioVariables,
-    assumptions: ['Slide row lists an FS range of 1.31-1.88.'],
-    limitations: [
-      'The height-ratio orientation is ambiguous in the scanned slide and is not implemented.',
+      'sigma_p = sigma_cs (W_p / W_s)^0.46 / (H_p / H_s)^0.66',
+    requiredInputs: [
+      COMMON_EQUATION_INPUTS.ucsMpa,
+      COMMON_EQUATION_INPUTS.specimenWidthM,
+      COMMON_EQUATION_INPUTS.specimenHeightM,
     ],
-    status: 'partial',
-    statusNote:
-      'Listed from the slides but not fully parameterized because the specimen height ratio is ambiguous.',
+    variableDefinitions: [
+      ...ratioVariables,
+      {
+        symbol: 'sigma_cs',
+        description: 'Specimen compressive strength used for scaling',
+        unit: 'MPa',
+      },
+      { symbol: 'W_s, H_s', description: 'Specimen width and height', unit: 'm' },
+    ],
+    assumptions: [
+      'Paper table row lists an FS range of 1.31-1.88.',
+      'Height scaling is implemented as a denominator to preserve the Salamon-Munro height effect.',
+    ],
+    limitations: [
+      'Confirm the specimen basis before using this row for design.',
+    ],
+    status: 'implemented',
     sourceNotes: sourceTable,
-    // TODO: Implement after confirming whether the height term is H_p/H_s or H_s/H_p.
+    calculatorId: 'modifiedSalamonMunro',
   },
   {
     id: 'salamon-1982',
@@ -290,16 +301,24 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     rockCategory: 'coal-soft-rock',
     applicableRockType: 'Coal / soft rock table entry',
     formulaText:
-      'sigma_p = k V^-0.067 R0^0.593 {0.5933/e[(R/R0)^e - 1] + 1}',
-    requiredInputs: [],
-    variableDefinitions: ratioVariables,
-    assumptions: [],
-    limitations: ['The scanned variables and exponent notation are not fully legible.'],
-    status: 'partial',
-    statusNote:
-      'Visible in the slides but held as reference-only until notation can be verified.',
+      'sigma_p = k V^-0.0667 R0^0.5933 {0.5933/epsilon [(R/R0)^epsilon - 1] + 1}',
+    requiredInputs: [
+      COMMON_EQUATION_INPUTS.coefficientK,
+      COMMON_EQUATION_INPUTS.referenceRatio,
+      COMMON_EQUATION_INPUTS.epsilon,
+    ],
+    variableDefinitions: [
+      ...ratioVariables,
+      { symbol: 'V', description: 'Pillar volume from entered geometry', unit: 'm3' },
+      { symbol: 'R', description: 'Pillar width-to-height ratio W/H', unit: '-' },
+      { symbol: 'R0', description: 'Reference width-to-height ratio', unit: '-' },
+      { symbol: 'epsilon', description: 'Curvature exponent', unit: '-' },
+    ],
+    assumptions: ['Uses V = W x L x H and R = W/H from the current geometry.'],
+    limitations: ['k, R0, and epsilon must match the calibration basis of the equation.'],
+    status: 'implemented',
     sourceNotes: sourceTable,
-    // TODO: Implement after validating V, R0, R, and e definitions from the original paper.
+    calculatorId: 'salamon1982',
   },
   {
     id: 'wilson-1972',
@@ -333,16 +352,28 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     rockCategory: 'coal-soft-rock',
     applicableRockType: 'Soft rock / coal table entry',
     formulaText:
-      'sigma_p = sigma_cs[(W_p / W_s)^0.597(H_p / H_s)^0.951] as visible in the slide',
-    requiredInputs: [],
-    variableDefinitions: ratioVariables,
-    assumptions: [],
-    limitations: ['The specimen height-ratio orientation is ambiguous in the scanned slide.'],
-    status: 'partial',
-    statusNote:
-      'Listed from the slides but not implemented until the specimen scaling terms are confirmed.',
+      'sigma_p = sigma_cs (W_p / W_s)^0.597 / (H_p / H_s)^0.951',
+    requiredInputs: [
+      COMMON_EQUATION_INPUTS.ucsMpa,
+      COMMON_EQUATION_INPUTS.specimenWidthM,
+      COMMON_EQUATION_INPUTS.specimenHeightM,
+    ],
+    variableDefinitions: [
+      ...ratioVariables,
+      {
+        symbol: 'sigma_cs',
+        description: 'Specimen compressive strength used for scaling',
+        unit: 'MPa',
+      },
+      { symbol: 'W_s, H_s', description: 'Specimen width and height', unit: 'm' },
+    ],
+    assumptions: [
+      'Height scaling is implemented as a denominator so strength decreases with increasing pillar height.',
+    ],
+    limitations: ['Confirm the specimen basis before using this row for design.'],
+    status: 'implemented',
     sourceNotes: sourceTable,
-    // TODO: Implement after checking the original specimen width/height scaling notation.
+    calculatorId: 'hardyAgapito1975',
   },
   {
     id: 'wardell-1976',
@@ -574,22 +605,26 @@ export const pillarStrengthEquations: PillarStrengthEquation[] = [
     reference: 'Martin (1993)',
     rockCategory: 'hard-rock',
     applicableRockType: 'Hard rock table entry',
-    formulaText: 'sigma_1 = sigma_3 + sqrt(s sigma_c) as visible in the slide',
-    requiredInputs: [],
+    formulaText: 'sigma_1 = sigma_3 + sqrt(s) sigma_c',
+    requiredInputs: [
+      COMMON_EQUATION_INPUTS.ucsMpa,
+      COMMON_EQUATION_INPUTS.sigma3Mpa,
+      COMMON_EQUATION_INPUTS.martinS,
+    ],
     variableDefinitions: [
       ucsVariable,
       { symbol: 's', description: 'Material or rock mass constant' },
       { symbol: 'sigma_3', description: 'Minor principal stress', unit: 'MPa' },
     ],
-    assumptions: [],
-    limitations: [
-      'The radical term is not dimensionally clear from the scanned slide.',
+    assumptions: [
+      'Default s = 0.1089 gives sqrt(s) = 0.33, matching the table rock mass-intact strength ratio.',
     ],
-    status: 'partial',
-    statusNote:
-      'Listed from the slides but not fully parameterized because the formula is not sufficiently legible.',
+    limitations: [
+      'This is a hard-rock failure criterion row, not a direct tributary-area pillar equation.',
+    ],
+    status: 'implemented',
     sourceNotes: sourceTable,
-    // TODO: Implement after confirming the Martin expression and its variable units.
+    calculatorId: 'martin1993',
   },
   {
     id: 'lunder-pakalnis-1997',

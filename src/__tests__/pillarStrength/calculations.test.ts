@@ -105,6 +105,60 @@ describe('pillar strength calculations', () => {
     );
   });
 
+  it('calculates newly implemented Table 2 equations', () => {
+    const bunting = equationCalculators.bunting1912({
+      widthM: 8,
+      lengthM: 8,
+      heightM: 4,
+      widthToHeightRatio: 2,
+      equationInputs: {},
+    });
+    const bieniawskiLarge = equationCalculators.bieniawskiLarge1967({
+      widthM: 8,
+      lengthM: 8,
+      heightM: 4,
+      widthToHeightRatio: 2,
+      equationInputs: {},
+    });
+    const modifiedSalamon = equationCalculators.modifiedSalamonMunro({
+      widthM: 8,
+      lengthM: 8,
+      heightM: 4,
+      widthToHeightRatio: 2,
+      equationInputs: { ucsMpa: 10, specimenWidthM: 0.05, specimenHeightM: 0.05 },
+    });
+
+    expect(bunting.strengthMpa).toBeCloseTo(1300 * 0.006894757293168361);
+    expect(bieniawskiLarge.strengthMpa).toBeCloseTo(800 * 0.006894757293168361);
+    expect(modifiedSalamon.strengthMpa).toBeCloseTo(
+      10 * (Math.pow(8 / 0.05, 0.46) / Math.pow(4 / 0.05, 0.66))
+    );
+  });
+
+  it('calculates Salamon 1982 and Hardy-Agapito specimen-scaled equations', () => {
+    const salamon1982 = equationCalculators.salamon1982({
+      widthM: 8,
+      lengthM: 8,
+      heightM: 4,
+      widthToHeightRatio: 2,
+      equationInputs: { coefficientK: 10, referenceRatio: 1, epsilon: 1 },
+    });
+    const hardyAgapito = equationCalculators.hardyAgapito1975({
+      widthM: 8,
+      lengthM: 8,
+      heightM: 4,
+      widthToHeightRatio: 2,
+      equationInputs: { ucsMpa: 10, specimenWidthM: 0.05, specimenHeightM: 0.05 },
+    });
+
+    expect(salamon1982.strengthMpa).toBeCloseTo(
+      10 * Math.pow(8 * 8 * 4, -0.0667) * (0.5933 * (2 - 1) + 1)
+    );
+    expect(hardyAgapito.strengthMpa).toBeCloseTo(
+      10 * (Math.pow(8 / 0.05, 0.597) / Math.pow(4 / 0.05, 0.951))
+    );
+  });
+
   it('calculates Hedley and Grant hard-rock strength', () => {
     const result = equationCalculators.hedleyGrant({
       widthM: 9,
@@ -115,6 +169,18 @@ describe('pillar strength calculations', () => {
     });
 
     expect(result.strengthMpa).toBeCloseTo(179 * (3 / Math.pow(3, 0.75)));
+  });
+
+  it('calculates Martin hard-rock criterion row', () => {
+    const result = equationCalculators.martin1993({
+      widthM: 8,
+      lengthM: 8,
+      heightM: 4,
+      widthToHeightRatio: 2,
+      equationInputs: { ucsMpa: 100, sigma3Mpa: 2, martinS: 0.1089 },
+    });
+
+    expect(result.strengthMpa).toBeCloseTo(35);
   });
 
   it('calculates Lunder and Pakalnis strength', () => {

@@ -12,6 +12,8 @@ import type {
 } from './types';
 
 const POSITIVE_TOLERANCE = 0;
+const PSI_TO_MPA = 0.006894757293168361;
+const METRES_TO_INCHES = 39.37007874015748;
 
 function isPositive(value: number | null | undefined): value is number {
   return Number.isFinite(value) && Number(value) > POSITIVE_TOLERANCE;
@@ -413,6 +415,15 @@ export function calculateLunderPakalnisConfinement(
 }
 
 export const equationCalculators: Record<string, EquationCalculator> = {
+  bunting1912: (context) => {
+    const geometryError = requirePositiveGeometry(context);
+    if (geometryError) return invalidResult(geometryError);
+
+    const strengthPsi = 1000 * (0.7 + 0.3 * (context.widthM / context.heightM));
+    return strengthResult(strengthPsi * PSI_TO_MPA, [
+      'Bunting (1912) is implemented using the paper table form with the historical 1000 psi coefficient converted to MPa.',
+    ]);
+  },
   linearUcsRatio: (context) => {
     const geometryError = requirePositiveGeometry(context);
     const ucsMpa = requirePositiveInput(context, 'ucsMpa', 'UCS');
@@ -451,6 +462,19 @@ export const equationCalculators: Record<string, EquationCalculator> = {
       coefficientK * Math.sqrt(context.widthM / context.heightM)
     );
   },
+  greenwald1941: (context) => {
+    const geometryError = requirePositiveGeometry(context);
+    if (geometryError) return invalidResult(geometryError);
+
+    const widthIn = context.widthM * METRES_TO_INCHES;
+    const heightIn = context.heightM * METRES_TO_INCHES;
+    const strengthPsi =
+      2800 * (Math.pow(widthIn, 0.5) / Math.pow(heightIn, 5 / 6));
+
+    return strengthResult(strengthPsi * PSI_TO_MPA, [
+      'Greenwald et al. (1941) is implemented in its historical inch/psi form and converted to MPa.',
+    ]);
+  },
   hollandGaddy: (context) => {
     const geometryError = requirePositiveGeometry(context);
     const ucsMpa = requirePositiveInput(context, 'ucsMpa', 'UCS');
@@ -484,6 +508,95 @@ export const equationCalculators: Record<string, EquationCalculator> = {
         (Math.pow(context.widthM, 0.46) / Math.pow(context.heightM, 0.66))
     );
   },
+  bieniawskiSmall1967: (context) => {
+    const geometryError = requirePositiveGeometry(context);
+    if (geometryError) return invalidResult(geometryError);
+
+    const widthIn = context.widthM * METRES_TO_INCHES;
+    const heightIn = context.heightM * METRES_TO_INCHES;
+    const warnings: string[] = [
+      'Bieniawski (1967/1969) small-width variant is implemented in its historical inch/psi form and converted to MPa.',
+    ];
+
+    if (widthIn >= 60) {
+      warnings.push('This variant is intended for pillar width less than 60 inches.');
+    }
+
+    const strengthPsi =
+      1100 * (Math.pow(widthIn, 0.16) / Math.pow(heightIn, 0.55));
+    return strengthResult(strengthPsi * PSI_TO_MPA, warnings);
+  },
+  bieniawskiLarge1967: (context) => {
+    const geometryError = requirePositiveGeometry(context);
+    if (geometryError) return invalidResult(geometryError);
+
+    const widthIn = context.widthM * METRES_TO_INCHES;
+    const warnings: string[] = [
+      'Bieniawski (1967/1969) large-width variant is implemented in its historical psi form and converted to MPa.',
+    ];
+
+    if (widthIn <= 60) {
+      warnings.push('This variant is intended for pillar width greater than 60 inches.');
+    }
+
+    const strengthPsi = 400 + 200 * (context.widthM / context.heightM);
+    return strengthResult(strengthPsi * PSI_TO_MPA, warnings);
+  },
+  modifiedSalamonMunro: (context) => {
+    const ucsMpa = requirePositiveInput(context, 'ucsMpa', 'specimen strength');
+    const specimenWidthM = requirePositiveInput(
+      context,
+      'specimenWidthM',
+      'specimen width'
+    );
+    const specimenHeightM = requirePositiveInput(
+      context,
+      'specimenHeightM',
+      'specimen height'
+    );
+    const geometryError = requirePositiveGeometry(context);
+    if (geometryError) return invalidResult(geometryError);
+    if (!ucsMpa || !specimenWidthM || !specimenHeightM) {
+      return invalidResult('Specimen strength, width, and height must be greater than zero.');
+    }
+
+    return strengthResult(
+      ucsMpa *
+        (Math.pow(context.widthM / specimenWidthM, 0.46) /
+          Math.pow(context.heightM / specimenHeightM, 0.66)),
+      [
+        'The paper table shows specimen-scaled Wp/Ws and Hp/Hs terms. This implementation uses the height term as a denominator to preserve the Salamon-Munro height effect.',
+      ]
+    );
+  },
+  salamon1982: (context) => {
+    const geometryError = requirePositiveGeometry(context);
+    const coefficientK = requirePositiveInput(context, 'coefficientK', 'k');
+    const referenceRatio = requirePositiveInput(context, 'referenceRatio', 'R0');
+    const epsilon = getInput(context, 'epsilon');
+    if (geometryError) return invalidResult(geometryError);
+    if (!coefficientK || !referenceRatio || epsilon === null) {
+      return invalidResult('k, R0, and epsilon are required.');
+    }
+    if (Math.abs(epsilon) < 1e-9) {
+      return invalidResult('Epsilon cannot be zero in the Salamon (1982) equation.');
+    }
+
+    const volumeM3 = context.widthM * context.lengthM * context.heightM;
+    const ratio = context.widthM / context.heightM;
+    const shapeTerm =
+      (0.5933 / epsilon) * (Math.pow(ratio / referenceRatio, epsilon) - 1) + 1;
+
+    return strengthResult(
+      coefficientK *
+        Math.pow(volumeM3, -0.0667) *
+        Math.pow(referenceRatio, 0.5933) *
+        shapeTerm,
+      [
+        'Salamon (1982) uses pillar volume V from the entered geometry and R = W/H. Confirm that k, R0, and epsilon match the calibration basis.',
+      ]
+    );
+  },
   wilson: (context) => {
     const ucsMpa = requirePositiveInput(context, 'ucsMpa', 'UCS');
     const sigma3Mpa = getInput(context, 'sigma3Mpa');
@@ -508,6 +621,33 @@ export const equationCalculators: Record<string, EquationCalculator> = {
     return strengthResult(
       coefficientA * (1 / context.heightM) +
         coefficientB * Math.pow(context.widthM / context.heightM, 2)
+    );
+  },
+  hardyAgapito1975: (context) => {
+    const ucsMpa = requirePositiveInput(context, 'ucsMpa', 'specimen strength');
+    const specimenWidthM = requirePositiveInput(
+      context,
+      'specimenWidthM',
+      'specimen width'
+    );
+    const specimenHeightM = requirePositiveInput(
+      context,
+      'specimenHeightM',
+      'specimen height'
+    );
+    const geometryError = requirePositiveGeometry(context);
+    if (geometryError) return invalidResult(geometryError);
+    if (!ucsMpa || !specimenWidthM || !specimenHeightM) {
+      return invalidResult('Specimen strength, width, and height must be greater than zero.');
+    }
+
+    return strengthResult(
+      ucsMpa *
+        (Math.pow(context.widthM / specimenWidthM, 0.597) /
+          Math.pow(context.heightM / specimenHeightM, 0.951)),
+      [
+        'The paper table shows specimen-scaled Wp/Ws and Hp/Hs terms. This implementation uses the height term as a denominator so strength decreases with increasing pillar height.',
+      ]
     );
   },
   bieniawski1981: (context) => {
@@ -597,6 +737,18 @@ export const equationCalculators: Record<string, EquationCalculator> = {
 
     return strengthResult(sigma3Mpa + Math.sqrt(radicand), [
       'Hoek-Brown is a failure criterion shown in the slide table, not a tributary-area pillar formula.',
+    ]);
+  },
+  martin1993: (context) => {
+    const ucsMpa = requirePositiveInput(context, 'ucsMpa', 'UCS');
+    const sigma3Mpa = getInput(context, 'sigma3Mpa');
+    const martinS = getInput(context, 'martinS');
+    if (!ucsMpa || sigma3Mpa === null || sigma3Mpa < 0 || martinS === null || martinS < 0) {
+      return invalidResult('UCS, non-negative sigma3, and non-negative Martin s are required.');
+    }
+
+    return strengthResult(sigma3Mpa + Math.sqrt(martinS) * ucsMpa, [
+      'Martin (1993) is implemented as sigma1 = sigma3 + sqrt(s) sigma_c from the hard-rock table context.',
     ]);
   },
   lunderPakalnis: (context) => {
