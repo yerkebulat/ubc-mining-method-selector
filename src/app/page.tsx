@@ -233,39 +233,50 @@ export default function Home() {
       </div>
 
       {/* About Section */}
-      <div className="mt-16 border-t border-mining-200 pt-12">
-        <div className="mx-auto max-w-4xl">
-          <h2 className="mb-6 text-2xl font-bold text-mining-900 text-center">
-            About This Tool
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2">
-            <div className="card">
-              <h3 className="mb-3 font-semibold text-mining-900">Methodology</h3>
-              <p className="text-sm text-mining-600">
-                This tool implements the numerical mining method selection approach
-                described by Nicholas (1981). It evaluates 10 underground mining
-                methods against deposit characteristics including geometry, grade
-                distribution, and rock mechanics properties. Each characteristic
-                receives a score from -49 (eliminated) to 6 (highly preferred), and
-                methods are ranked by total score.
+      <section className="-mx-4 mt-16 border-y border-mining-200 bg-mining-50/60 px-4 py-10 dark:border-mining-800 dark:bg-mining-900/30">
+        <div className="mx-auto max-w-5xl">
+          <div className="mx-auto mb-8 max-w-3xl text-center">
+            <p className="text-sm font-semibold uppercase tracking-wide text-mining-500">
+              Method background
+            </p>
+            <h2 className="mt-2 text-2xl font-bold text-mining-900">
+              About the Selector
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-mining-600">
+              The selector is a preliminary screening aid for comparing underground
+              mining methods from deposit geometry, grade distribution, and rock
+              mechanics inputs.
+            </p>
+          </div>
+
+          <div className="grid gap-5 md:grid-cols-2">
+            <article className="card h-full">
+              <h3 className="mb-3 font-semibold text-mining-900">Scoring Method</h3>
+              <p className="text-sm leading-6 text-mining-600">
+                The workflow follows the Nicholas (1981) numerical selection method
+                and the UBC adaptation. Each input contributes a score from -49
+                (eliminated) to 6 (strong fit), then the methods are ranked by total
+                suitability score.
               </p>
-            </div>
-            <div className="card">
-              <h3 className="mb-3 font-semibold text-mining-900">Mining Methods</h3>
-              <ul className="grid grid-cols-2 gap-1 text-sm text-mining-600">
+            </article>
+
+            <article className="card h-full">
+              <h3 className="mb-3 font-semibold text-mining-900">Methods Compared</h3>
+              <ul className="grid gap-2 text-sm text-mining-600 sm:grid-cols-2">
                 {config.methods.map((method) => (
-                  <li key={method} className="flex items-center gap-1">
-                    <span className="h-1.5 w-1.5 rounded-full bg-mining-400" />
-                    {method}
+                  <li key={method} className="flex items-start gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 flex-shrink-0 rounded-full bg-mining-400" />
+                    <span>{method}</span>
                   </li>
                 ))}
               </ul>
-            </div>
-            <div className="card">
+            </article>
+
+            <article className="card h-full">
               <h3 className="mb-3 font-semibold text-mining-900">References</h3>
-              <ul className="space-y-2 text-sm text-mining-600">
+              <ul className="space-y-3 text-sm leading-6 text-mining-600">
                 <li>
-                  Nicholas, D.E. (1981). &quot;Method Selection – A Numerical
+                  Nicholas, D.E. (1981). &quot;Method Selection - A Numerical
                   Approach.&quot; Design and Operation of Caving and Sublevel Stoping
                   Mines, Ch. 4, pp. 39-53.
                 </li>
@@ -275,20 +286,20 @@ export default function Home() {
                   &amp; Equipment Selection, Calgary.
                 </li>
               </ul>
-            </div>
-            <div className="card">
-              <h3 className="mb-3 font-semibold text-mining-900">Limitations</h3>
-              <p className="text-sm text-mining-600">
-                This is a preliminary screening tool. Results should be validated
-                through detailed feasibility studies considering site-specific
-                factors, economic analysis, environmental constraints, and
-                operational requirements. The tool does not account for all possible
-                mining methods or combinations thereof.
+            </article>
+
+            <article className="card h-full">
+              <h3 className="mb-3 font-semibold text-mining-900">Use With Care</h3>
+              <p className="text-sm leading-6 text-mining-600">
+                Treat the output as an early ranking, not a final design decision.
+                Site-specific geotechnical data, economics, environmental constraints,
+                access, ventilation, sequencing, and operational risks still need
+                detailed engineering review.
               </p>
-            </div>
+            </article>
           </div>
         </div>
-      </div>
+      </section>
 
       {/* Weights Modal */}
       <WeightsModal isOpen={showWeights} onClose={() => setShowWeights(false)} />
